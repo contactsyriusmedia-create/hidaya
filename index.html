@@ -1,0 +1,589 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hidaya</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --nuit: #120C08;          /* fond principal, brun presque noir */
+    --nuit-2: #1C140E;
+    --cuir: #2A1E15;          /* surfaces */
+    --verre: rgba(255, 236, 214, .05);
+    --verre-bord: rgba(232, 200, 160, .14);
+    --sable: #D9B98C;         /* accent principal */
+    --sable-2: #B88A55;
+    --cuivre: #A86B3C;
+    --creme: #F4EADC;         /* texte principal */
+    --creme-2: rgba(244, 234, 220, .66);
+    --creme-3: rgba(244, 234, 220, .42);
+    --vert-ok: #8FBF8A;
+    --degrade-or: linear-gradient(180deg, #E8CDA2 0%, #C99D66 100%);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: Inter, -apple-system, system-ui, sans-serif;
+    background: radial-gradient(ellipse at 50% 0%, #2A1C12 0%, #0D0906 70%);
+    color: var(--creme);
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px 16px;
+  }
+  .telephone {
+    width: 390px; height: 844px; max-width: 100%;
+    background: var(--nuit);
+    border-radius: 46px;
+    box-shadow: 0 0 0 1px rgba(232,200,160,.25), 0 0 0 10px #050302, 0 40px 100px rgba(0,0,0,.6);
+    overflow: hidden; position: relative;
+    display: flex; flex-direction: column;
+  }
+  @media (max-width: 440px) {
+    body { padding: 0; }
+    .telephone { width: 100%; height: 100vh; border-radius: 0; box-shadow: none; }
+  }
+  .barre-statut { height: 46px; flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; padding: 0 30px; font-size: 14px; font-weight: 600; position: absolute; top: 0; left: 0; right: 0; z-index: 5; background: linear-gradient(180deg, rgba(18,12,8,.95) 40%, transparent); }
+  .ecran { flex: 1; overflow-y: auto; display: none; padding: 46px 20px 110px; position: relative; }
+  .ecran.actif { display: block; }
+  .ecran::-webkit-scrollbar { display: none; }
+
+  .surtitre { font-size: 11.5px; font-weight: 600; letter-spacing: 2.2px; text-transform: uppercase; color: var(--sable); }
+  .serif { font-family: Fraunces, serif; }
+  .italique-or { font-family: Fraunces, serif; font-style: italic; color: var(--sable); }
+
+  /* ---------- ACCUEIL ---------- */
+  .ciel {
+    position: absolute; top: 0; left: 0; right: 0; height: 430px; z-index: 0;
+    background:
+      radial-gradient(ellipse 60% 40% at 50% 62%, rgba(232,180,110,.45), transparent 70%),
+      linear-gradient(180deg, #1B120C 0%, #3A2617 45%, #6E4526 72%, #2A1B11 100%);
+    overflow: hidden;
+  }
+  .ciel::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 55%, var(--nuit) 100%); }
+  .ciel svg.arche { position: absolute; bottom: 0; left: 0; width: 100%; height: 100%; }
+  .etoiles span { position: absolute; width: 2px; height: 2px; border-radius: 50%; background: #F4EADC; opacity: .6; }
+
+  .haut-accueil { position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: center; padding-top: 10px; }
+  .marque { display: flex; align-items: center; gap: 10px; }
+  .icone-app { width: 38px; height: 38px; border-radius: 11px; background: linear-gradient(160deg, #3A2819, #1A120C); border: 1px solid var(--verre-bord); display: grid; place-items: center; }
+  .marque .nom { font-family: Fraunces, serif; font-weight: 600; font-size: 19px; }
+  .marque .ar { font-family: Amiri, serif; color: var(--sable); font-size: 18px; }
+  .rond { width: 40px; height: 40px; border-radius: 50%; background: rgba(18,12,8,.45); border: 1px solid var(--verre-bord); backdrop-filter: blur(10px); display: grid; place-items: center; color: var(--creme); cursor: pointer; }
+
+  .heros { position: relative; z-index: 2; padding-top: 118px; }
+  .heros .salam { font-size: 14px; color: var(--creme-2); margin: 12px 0 4px; }
+  .heros h1 { font-family: Fraunces, serif; font-weight: 500; font-size: 34px; line-height: 1.12; letter-spacing: -.5px; }
+
+  .recherche { position: relative; z-index: 2; margin-top: 20px; background: rgba(28,20,14,.72); backdrop-filter: blur(14px); border: 1px solid var(--verre-bord); border-radius: 24px; padding: 16px 16px 12px; }
+  .recherche textarea { width: 100%; border: none; outline: none; resize: none; font: inherit; font-size: 16px; min-height: 58px; background: transparent; color: var(--creme); }
+  .recherche textarea::placeholder { color: var(--creme-3); }
+  .recherche-bas { display: flex; justify-content: space-between; align-items: center; }
+  .envoyer { background: var(--degrade-or); color: #2A1A0E; border: none; border-radius: 99px; padding: 11px 18px; font: inherit; font-weight: 600; font-size: 14px; cursor: pointer; display: flex; gap: 7px; align-items: center; box-shadow: 0 6px 20px rgba(201,157,102,.25); }
+
+  .titre-section { display: flex; justify-content: space-between; align-items: baseline; margin: 28px 0 12px; }
+  .lien { font-size: 13px; color: var(--sable); }
+  .liste { background: var(--verre); border: 1px solid var(--verre-bord); border-radius: 20px; overflow: hidden; }
+  .ligne { width: 100%; text-align: left; background: none; border: none; border-bottom: 1px solid var(--verre-bord); padding: 15px 16px; font: inherit; font-size: 14.5px; color: var(--creme); cursor: pointer; display: flex; gap: 12px; align-items: center; }
+  .ligne:last-child { border-bottom: none; }
+  .ligne:hover { background: rgba(255,236,214,.04); }
+  .ligne .puce { width: 30px; height: 30px; border-radius: 9px; background: rgba(217,185,140,.1); display: grid; place-items: center; flex-shrink: 0; color: var(--sable); }
+  .ligne .fleche { margin-left: auto; color: var(--creme-3); }
+
+  .themes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .theme { position: relative; height: 92px; border-radius: 20px; border: 1px solid var(--verre-bord); overflow: hidden; cursor: pointer; text-align: left; padding: 14px; font: inherit; color: var(--creme); display: flex; flex-direction: column; justify-content: flex-end; }
+  .theme .ar { position: absolute; top: 10px; right: 14px; font-family: Amiri, serif; font-size: 22px; color: rgba(244,234,220,.28); }
+  .theme .t { font-family: Fraunces, serif; font-size: 17px; font-weight: 500; }
+  .theme .s { font-size: 11.5px; color: var(--creme-2); }
+  .th1 { background: linear-gradient(150deg, #4A2E1A, #1E140D); }
+  .th2 { background: linear-gradient(150deg, #3B2A1C, #17100B); }
+  .th3 { background: linear-gradient(150deg, #5A3A22, #22160E); }
+  .th4 { background: linear-gradient(150deg, #33241A, #140E0A); }
+
+  .verset-jour { margin-top: 28px; border-radius: 24px; padding: 22px 20px; border: 1px solid var(--verre-bord); background: radial-gradient(ellipse at 80% 0%, rgba(217,185,140,.16), transparent 60%), var(--nuit-2); }
+  .verset-jour .ar { font-family: Amiri, serif; font-size: 25px; direction: rtl; text-align: center; margin: 16px 0 10px; line-height: 1.8; color: var(--creme); }
+  .verset-jour .fr { font-family: Fraunces, serif; font-style: italic; font-size: 15.5px; line-height: 1.5; text-align: center; color: var(--creme-2); }
+  .verset-jour .ref { font-size: 12px; margin-top: 12px; color: var(--sable); text-align: center; letter-spacing: .4px; }
+
+  /* ---------- RÉSULTATS ---------- */
+  .haut-res { display: flex; align-items: center; gap: 12px; padding: 10px 0 18px; }
+  .question-posee { font-family: Fraunces, serif; font-size: 23px; font-weight: 500; line-height: 1.22; letter-spacing: -.3px; }
+  .meta-res { font-size: 12.5px; color: var(--creme-3); margin: -8px 0 18px 52px; }
+
+  .resume { border-radius: 22px; padding: 18px; margin-bottom: 14px; background: linear-gradient(160deg, rgba(217,185,140,.16), rgba(168,107,60,.06)); border: 1px solid rgba(217,185,140,.28); }
+  .resume p { font-size: 15px; line-height: 1.6; margin-top: 8px; color: var(--creme); }
+
+  .carte-source { background: var(--verre); border: 1px solid var(--verre-bord); border-radius: 22px; padding: 18px; margin-bottom: 12px; }
+  .carte-haut { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .type { font-size: 11px; font-weight: 600; letter-spacing: 1.6px; text-transform: uppercase; color: var(--sable); display: flex; align-items: center; gap: 7px; }
+  .type::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--sable); }
+  .grade { font-size: 11.5px; font-weight: 600; padding: 4px 10px; border-radius: 99px; background: rgba(143,191,138,.12); color: var(--vert-ok); border: 1px solid rgba(143,191,138,.25); }
+  .carte-source .ar { font-family: Amiri, serif; font-size: 23px; line-height: 1.95; direction: rtl; text-align: right; color: var(--creme); margin-bottom: 10px; }
+  .carte-source .fr { font-size: 15px; line-height: 1.6; color: var(--creme-2); }
+  .carte-source .ref { font-size: 12.5px; color: var(--sable); margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--verre-bord); display: flex; justify-content: space-between; align-items: center; }
+  .actions { display: flex; gap: 2px; }
+  .actions button { background: none; border: none; cursor: pointer; color: var(--creme-3); padding: 5px; border-radius: 8px; display: grid; place-items: center; }
+  .actions button:hover { color: var(--sable); }
+
+  .avertissement { font-size: 12.5px; color: var(--creme-3); line-height: 1.55; text-align: center; padding: 14px 8px 4px; }
+  .avertissement em { font-family: Fraunces, serif; color: var(--sable); font-size: 14px; display: block; margin-bottom: 4px; }
+
+  .chargement { display: none; text-align: center; padding: 90px 0; color: var(--creme-2); }
+  .croissant-anim { width: 54px; height: 54px; margin: 0 auto 18px; animation: tourne 2.4s linear infinite; }
+  @keyframes tourne { to { transform: rotate(360deg); } }
+
+
+  /* ---------- EXERCICES ---------- */
+  .titre-bloc { margin: 26px 0 14px; }
+  .titre-bloc h2 { font-family: Fraunces, serif; font-weight: 500; font-size: 22px; line-height: 1.2; margin-top: 6px; }
+  .exo { position: relative; border-radius: 22px; padding: 18px; margin-bottom: 12px; border: 1px solid var(--verre-bord); background: linear-gradient(160deg, rgba(168,107,60,.14), rgba(255,236,214,.03)); transition: border-color .3s, opacity .3s; }
+  .exo.fini { border-color: rgba(143,191,138,.45); }
+  .exo-haut { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 10px; }
+  .exo-num { width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0; display: grid; place-items: center; font-family: Fraunces, serif; font-style: italic; font-size: 17px; color: #2A1A0E; background: var(--degrade-or); }
+  .exo.fini .exo-num { background: var(--vert-ok); }
+  .quand { display: block; font-size: 11px; font-weight: 600; letter-spacing: 1.4px; text-transform: uppercase; color: var(--creme-3); }
+  .exo-titre h3 { font-family: Fraunces, serif; font-weight: 500; font-size: 19px; line-height: 1.25; margin-top: 2px; }
+  .exo-texte { font-size: 14.5px; line-height: 1.6; color: var(--creme-2); }
+  .formule { margin-top: 10px; border-radius: 16px; padding: 14px; text-align: center; background: rgba(18,12,8,.55); border: 1px solid var(--verre-bord); }
+  .formule .ar { font-family: Amiri, serif; font-size: 23px; line-height: 1.7; }
+  .formule .translit { font-family: Fraunces, serif; font-style: italic; color: var(--sable); font-size: 14.5px; margin-top: 2px; }
+  .formule .trad { font-size: 13px; color: var(--creme-3); margin-top: 6px; }
+  .etapes { display: flex; align-items: center; justify-content: space-between; margin: 4px 0 12px; }
+  .etape { flex: 1; text-align: center; font-size: 12.5px; font-weight: 500; padding: 10px 4px; border-radius: 12px; background: rgba(18,12,8,.55); border: 1px solid var(--verre-bord); }
+  .etape-fleche { color: var(--sable); padding: 0 6px; }
+  .note-faible { margin-top: 12px; font-size: 13px; line-height: 1.55; color: #E9C9A0; background: rgba(214,140,70,.1); border: 1px solid rgba(214,140,70,.3); border-radius: 14px; padding: 11px 12px; }
+  .exo-bas { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--verre-bord); }
+  .exo-source { font-size: 12px; color: var(--sable); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .mini-grade { font-size: 10.5px; font-weight: 600; padding: 2px 8px; border-radius: 99px; }
+  .mini-grade.ok { background: rgba(143,191,138,.12); color: var(--vert-ok); border: 1px solid rgba(143,191,138,.25); }
+  .mini-grade.faible { background: rgba(214,140,70,.12); color: #E3A365; border: 1px solid rgba(214,140,70,.35); }
+  .fait { flex-shrink: 0; background: rgba(255,236,214,.05); border: 1px solid var(--verre-bord); color: var(--creme); border-radius: 99px; padding: 8px 14px; font: inherit; font-size: 13px; font-weight: 500; cursor: pointer; }
+  .exo.fini .fait { background: rgba(143,191,138,.15); border-color: rgba(143,191,138,.4); color: var(--vert-ok); }
+
+  .defi { margin-top: 18px; border-radius: 24px; padding: 20px 18px; border: 1px solid rgba(217,185,140,.3); background: radial-gradient(ellipse at 100% 0%, rgba(217,185,140,.2), transparent 60%), var(--nuit-2); }
+  .defi-haut { display: flex; justify-content: space-between; align-items: flex-start; }
+  .defi h3 { font-family: Fraunces, serif; font-weight: 500; font-size: 20px; margin-top: 6px; }
+  .defi-score { font-family: Fraunces, serif; font-size: 26px; color: var(--sable); }
+  .defi p { font-size: 14px; line-height: 1.55; color: var(--creme-2); margin: 8px 0 14px; }
+  .jours { display: flex; justify-content: space-between; gap: 6px; }
+  .jours button { flex: 1; aspect-ratio: 1; border-radius: 50%; border: 1px solid var(--verre-bord); background: rgba(255,236,214,.04); color: var(--creme-2); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
+  .jours button.ok { background: var(--degrade-or); color: #2A1A0E; border-color: transparent; }
+
+  .groupe { display: flex; align-items: baseline; gap: 8px; margin: 18px 0 10px; }
+  .groupe span { font-family: Fraunces, serif; font-size: 16px; font-weight: 500; }
+  .groupe em { font-family: Fraunces, serif; font-size: 14px; color: var(--creme-3); }
+  .origine { display: inline-block; font-size: 10px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; padding: 3px 8px; border-radius: 99px; margin: 0 8px 4px 0; }
+  .origine.sunna { color: var(--sable); background: rgba(217,185,140,.12); border: 1px solid rgba(217,185,140,.3); }
+  .origine.psy { color: #C9B3E0; background: rgba(170,140,210,.12); border: 1px solid rgba(170,140,210,.3); }
+  .exo.psy { background: linear-gradient(160deg, rgba(150,120,190,.12), rgba(255,236,214,.03)); }
+  .exo.psy .exo-num { background: linear-gradient(180deg, #D9C6EC, #A98BC9); }
+  .mini-grade.psy { background: rgba(170,140,210,.12); color: #C9B3E0; border: 1px solid rgba(170,140,210,.3); }
+  .etape b { font-family: Fraunces, serif; color: var(--sable); font-size: 15px; }
+  .questions { margin: 8px 0 0 20px; font-size: 14.5px; line-height: 1.6; color: var(--creme); }
+  .questions li { margin-bottom: 4px; }
+  .questions li::marker { color: var(--sable); font-family: Fraunces, serif; }
+
+  /* ---------- SENSIBLE / VIDE ---------- */
+  .bloc-info { border-radius: 26px; padding: 30px 22px 22px; text-align: center; margin-top: 10px; border: 1px solid var(--verre-bord); background: radial-gradient(ellipse at 50% 0%, rgba(217,185,140,.14), transparent 65%), var(--nuit-2); }
+  .bloc-info .grande-ico { width: 64px; height: 64px; border-radius: 50%; border: 1px solid rgba(217,185,140,.35); background: rgba(217,185,140,.08); display: grid; place-items: center; margin: 0 auto 18px; color: var(--sable); }
+  .bloc-info h2 { font-family: Fraunces, serif; font-size: 23px; font-weight: 500; line-height: 1.2; margin-bottom: 10px; }
+  .bloc-info p { font-size: 15px; line-height: 1.6; color: var(--creme-2); }
+  .bouton-or { display: flex; justify-content: center; align-items: center; gap: 8px; width: 100%; background: var(--degrade-or); color: #2A1A0E; border: none; border-radius: 99px; padding: 15px; font: inherit; font-weight: 600; margin-top: 22px; cursor: pointer; box-shadow: 0 8px 24px rgba(201,157,102,.22); }
+  .bouton-verre { display: block; width: 100%; background: rgba(255,236,214,.04); color: var(--creme); border: 1px solid var(--verre-bord); border-radius: 99px; padding: 14px; font: inherit; font-weight: 500; margin-top: 10px; cursor: pointer; }
+
+  .apropos h2 { font-family: Fraunces, serif; font-weight: 500; font-size: 30px; line-height: 1.15; margin: 10px 0 20px; }
+  .point { display: flex; gap: 14px; padding: 16px 0; border-bottom: 1px solid var(--verre-bord); }
+  .point .num { font-family: Fraunces, serif; font-style: italic; color: var(--sable); font-size: 22px; width: 22px; flex-shrink: 0; }
+  .point p { font-size: 15px; line-height: 1.6; color: var(--creme-2); }
+  .point strong { color: var(--creme); font-weight: 600; }
+  .pastilles { display: flex; gap: 16px; margin-top: 22px; font-size: 13px; color: var(--creme-2); flex-wrap: wrap; }
+  .pastilles span::before { content: "• "; color: var(--sable); }
+
+  /* ---------- NAV ---------- */
+  .nav { position: absolute; left: 14px; right: 14px; bottom: 22px; z-index: 10; display: flex; justify-content: space-around; padding: 7px; border-radius: 26px; background: rgba(28,20,14,.78); backdrop-filter: blur(18px); border: 1px solid var(--verre-bord); }
+  .nav button { flex: 1; background: none; border: none; font: inherit; font-size: 10.5px; color: var(--creme-3); display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; padding: 8px 0; border-radius: 20px; }
+  .nav button.actif { color: var(--sable); background: rgba(217,185,140,.12); box-shadow: inset 0 0 0 1px rgba(217,185,140,.3); }
+  .nav svg { width: 21px; height: 21px; }
+</style>
+</head>
+<body>
+
+<div class="telephone">
+  <div class="barre-statut"><span>9:41</span><span>●●● 100 %</span></div>
+
+  <!-- ÉCRAN 1 : ACCUEIL -->
+  <section class="ecran actif" id="accueil">
+    <div class="ciel">
+      <div class="etoiles">
+        <span style="top:60px;left:60px"></span><span style="top:90px;left:300px;opacity:.4"></span>
+        <span style="top:140px;left:180px;opacity:.3"></span><span style="top:70px;left:220px"></span>
+        <span style="top:180px;left:330px;opacity:.5"></span><span style="top:120px;left:30px;opacity:.35"></span>
+      </div>
+      <!-- Arche de mosquée en silhouette -->
+      <svg class="arche" viewBox="0 0 390 430" preserveAspectRatio="xMidYMax slice">
+        <defs>
+          <linearGradient id="mur" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#140D08"/><stop offset="1" stop-color="#0F0A06"/></linearGradient>
+        </defs>
+        <path fill="url(#mur)" d="M0 0H390V430H330V250C330 150 270 90 195 60C120 90 60 150 60 250V430H0Z"/>
+        <path fill="none" stroke="rgba(217,185,140,.22)" stroke-width="1.2" d="M74 430V252C74 160 128 106 195 76C262 106 316 160 316 252V430"/>
+        <circle cx="282" cy="112" r="15" fill="#E8CDA2" opacity=".9"/>
+        <circle cx="289" cy="107" r="13" fill="#3A2617"/>
+      </svg>
+    </div>
+
+    <div class="haut-accueil">
+      <div class="marque">
+        <div class="icone-app">
+          <svg width="22" height="22" viewBox="0 0 24 24"><path d="M15 3a9 9 0 1 0 6 15.5A7.5 7.5 0 1 1 15 3Z" fill="#D9B98C"/></svg>
+        </div>
+        <span class="nom">Hidaya</span><span class="ar">هداية</span>
+      </div>
+      <button class="rond" onclick="aller('apropos')" title="Paramètres">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>
+      </button>
+    </div>
+
+    <div class="heros">
+      <div class="surtitre">Chaque réponse avec sa source</div>
+      <p class="salam">As-salāmu ʿalaykum</p>
+      <h1>Pose ta question.<br><span class="italique-or">Le Coran et la Sunna répondent.</span></h1>
+    </div>
+
+    <div class="recherche">
+      <textarea id="champ" placeholder="Ex. : Comment gérer ma colère ?"></textarea>
+      <div class="recherche-bas">
+        <button class="rond" title="Dicter" style="width:36px;height:36px">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+        </button>
+        <button class="envoyer" onclick="chercher()">Chercher
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="titre-section"><span class="surtitre">Questions fréquentes</span><span class="lien">Tout voir</span></div>
+    <div class="liste">
+      <button class="ligne" onclick="poser('Comment gérer ma colère ?')"><span class="puce">✦</span>Comment gérer ma colère ?<span class="fleche">→</span></button>
+      <button class="ligne" onclick="poser('Que faire quand je me sens triste ?')"><span class="puce">✦</span>Que faire quand je me sens triste ?<span class="fleche">→</span></button>
+      <button class="ligne" onclick="poser('Puis-je divorcer si mon mari ne prie pas ?')"><span class="puce">✦</span>Puis-je divorcer si mon mari ne prie pas ?<span class="fleche">→</span></button>
+    </div>
+
+    <div class="titre-section"><span class="surtitre">Explorer par thème</span></div>
+    <div class="themes">
+      <button class="theme th1"><span class="ar">الصلاة</span><span class="t">Prière</span><span class="s">128 textes</span></button>
+      <button class="theme th2"><span class="ar">الأسرة</span><span class="t">Famille</span><span class="s">96 textes</span></button>
+      <button class="theme th3"><span class="ar">القلب</span><span class="t">Émotions</span><span class="s">74 textes</span></button>
+      <button class="theme th4"><span class="ar">المال</span><span class="t">Argent</span><span class="s">61 textes</span></button>
+    </div>
+
+    <div class="verset-jour">
+      <div class="surtitre" style="text-align:center">Verset du jour</div>
+      <div class="ar">أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ</div>
+      <div class="fr">« N'est-ce point par l'évocation d'Allah que les cœurs se tranquillisent ? »</div>
+      <div class="ref">AR-RAʿD · 13 : 28</div>
+    </div>
+  </section>
+
+  <!-- ÉCRAN 2 : RÉSULTATS -->
+  <section class="ecran" id="resultats">
+    <div class="haut-res">
+      <button class="rond" onclick="aller('accueil')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 6l-6 6 6 6"/></svg></button>
+      <div class="question-posee">Comment gérer ma colère ?</div>
+    </div>
+
+    <div class="chargement" id="chargement">
+      <svg class="croissant-anim" viewBox="0 0 24 24"><path d="M15 3a9 9 0 1 0 6 15.5A7.5 7.5 0 1 1 15 3Z" fill="#D9B98C"/></svg>
+      <p class="serif" style="font-style:italic;font-size:17px">Recherche dans le Coran et la Sunna…</p>
+    </div>
+
+    <div id="contenu-res">
+      <p class="meta-res">4 sources (1 verset, 3 hadiths) · 6 exercices</p>
+
+      <div class="resume">
+        <div class="surtitre">✦ En bref</div>
+        <p>Les textes font de la maîtrise de soi une <span class="italique-or">vraie force</span>, aimée d'Allah. Et la Sunna donne des gestes concrets à faire tout de suite : tu les trouveras après les sources.</p>
+      </div>
+
+      <!-- LES SOURCES -->
+      <div class="titre-bloc">
+        <div class="surtitre">Les sources</div>
+        <h2>Ce que disent <span class="italique-or">les textes</span></h2>
+      </div>
+
+      <div class="carte-source">
+        <div class="carte-haut"><span class="type">Coran</span></div>
+        <div class="ar">الَّذِينَ يُنفِقُونَ فِي السَّرَّاءِ وَالضَّرَّاءِ وَالْكَاظِمِينَ الْغَيْظَ وَالْعَافِينَ عَنِ النَّاسِ ۗ وَاللَّهُ يُحِبُّ الْمُحْسِنِينَ</div>
+        <div class="fr">« Ceux qui dépensent dans l'aisance comme dans l'adversité, qui maîtrisent leur colère et pardonnent aux gens. Et Allah aime les bienfaisants. »</div>
+        <div class="ref"><span>ĀL ʿIMRĀN · 3 : 134</span><span class="actions"><button title="Favori"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3h12v18l-6-4-6 4z"/></svg></button><button title="Partager"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v13M7 8l5-5 5 5M5 14v6h14v-6"/></svg></button></span></div>
+      </div>
+
+      <div class="carte-source">
+        <div class="carte-haut"><span class="type">Hadith</span><span class="grade">✓ Sahih</span></div>
+        <div class="ar">لَيْسَ الشَّدِيدُ بِالصُّرَعَةِ، إِنَّمَا الشَّدِيدُ الَّذِي يَمْلِكُ نَفْسَهُ عِنْدَ الْغَضَبِ</div>
+        <div class="fr">« Le fort n'est pas celui qui terrasse les autres à la lutte. Le fort est celui qui se maîtrise au moment de la colère. »</div>
+        <div class="ref"><span>AL-BUKHARI 6114 · MUSLIM 2609</span><span class="actions"><button title="Favori"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3h12v18l-6-4-6 4z"/></svg></button><button title="Partager"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v13M7 8l5-5 5 5M5 14v6h14v-6"/></svg></button></span></div>
+      </div>
+
+      <div class="carte-source">
+        <div class="carte-haut"><span class="type">Hadith</span><span class="grade">✓ Sahih</span></div>
+        <div class="ar">لَا تَغْضَبْ</div>
+        <div class="fr">Un homme dit au Prophète ﷺ : « Conseille-moi. » Il répondit : « Ne te mets pas en colère. » L'homme répéta sa demande plusieurs fois, et il lui répondit à chaque fois : « Ne te mets pas en colère. »</div>
+        <div class="ref"><span>AL-BUKHARI 6116</span><span class="actions"><button title="Favori"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3h12v18l-6-4-6 4z"/></svg></button><button title="Partager"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v13M7 8l5-5 5 5M5 14v6h14v-6"/></svg></button></span></div>
+      </div>
+
+      <div class="carte-source">
+        <div class="carte-haut"><span class="type">Hadith</span><span class="grade">✓ Sahih · Al-Albani</span></div>
+        <div class="ar">إِذَا غَضِبَ أَحَدُكُمْ وَهُوَ قَائِمٌ فَلْيَجْلِسْ، فَإِنْ ذَهَبَ عَنْهُ الْغَضَبُ وَإِلَّا فَلْيَضْطَجِعْ</div>
+        <div class="fr">« Si l'un de vous se met en colère alors qu'il est debout, qu'il s'asseye. Si la colère le quitte, tant mieux. Sinon, qu'il s'allonge. »</div>
+        <div class="ref"><span>ABU DAWUD 4782</span><span class="actions"><button title="Favori"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3h12v18l-6-4-6 4z"/></svg></button><button title="Partager"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v13M7 8l5-5 5 5M5 14v6h14v-6"/></svg></button></span></div>
+      </div>
+
+
+      <!-- PASSE À L'ACTION -->
+      <div class="titre-bloc" style="margin-top:30px">
+        <div class="surtitre">Passe à l'action</div>
+        <h2>Des exercices <span class="italique-or">pour aller mieux</span></h2>
+      </div>
+      <div class="groupe"><span>Sur le moment</span><em>ce que le Prophète ﷺ conseillait</em></div>
+
+      <div class="exo" data-exo>
+        <div class="exo-haut">
+          <span class="exo-num">1</span>
+          <div class="exo-titre">
+            <span class="origine sunna">Sunna</span><span class="quand">Dès que la colère monte</span>
+            <h3>Demande la protection d'Allah</h3>
+          </div>
+        </div>
+        <p class="exo-texte">Dis à voix basse :</p>
+        <div class="formule">
+          <div class="ar">أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ</div>
+          <div class="translit">Aʿūdhu billāhi mina sh-shayṭāni r-rajīm</div>
+          <div class="trad">« Je cherche refuge auprès d'Allah contre le diable maudit. »</div>
+        </div>
+        <div class="exo-bas">
+          <span class="exo-source">Al-Bukhari 3282 · Muslim 2610 <span class="mini-grade ok">Sahih</span></span>
+          <button class="fait" onclick="cocher(this)">C'est fait</button>
+        </div>
+      </div>
+
+      <div class="exo" data-exo>
+        <div class="exo-haut">
+          <span class="exo-num">2</span>
+          <div class="exo-titre">
+            <span class="origine sunna">Sunna</span><span class="quand">Pendant la dispute</span>
+            <h3>Tais-toi</h3>
+          </div>
+        </div>
+        <p class="exo-texte">Ne réponds pas tant que la colère est là. Ce que tu dis maintenant, tu risques de le regretter. Reprends la discussion quand tu es calme.</p>
+        <div class="exo-bas">
+          <span class="exo-source">Al-Adab al-Mufrad 245 <span class="mini-grade ok">Sahih</span></span>
+          <button class="fait" onclick="cocher(this)">C'est fait</button>
+        </div>
+      </div>
+
+      <div class="exo" data-exo>
+        <div class="exo-haut">
+          <span class="exo-num">3</span>
+          <div class="exo-titre">
+            <span class="origine sunna">Sunna</span><span class="quand">Si la colère reste</span>
+            <h3>Change de position</h3>
+          </div>
+        </div>
+        <div class="etapes">
+          <div class="etape"><span>Debout</span></div>
+          <div class="etape-fleche">→</div>
+          <div class="etape"><span>Assieds-toi</span></div>
+          <div class="etape-fleche">→</div>
+          <div class="etape"><span>Allonge-toi</span></div>
+        </div>
+        <p class="exo-texte">Si tu es debout, assieds-toi. Si ça ne passe pas, allonge-toi. Le corps qui se pose aide le cœur à se poser.</p>
+        <div class="exo-bas">
+          <span class="exo-source">Abu Dawud 4782 <span class="mini-grade ok">Sahih</span></span>
+          <button class="fait" onclick="cocher(this)">C'est fait</button>
+        </div>
+      </div>
+
+      <div class="exo faible" data-exo>
+        <div class="exo-haut">
+          <span class="exo-num">4</span>
+          <div class="exo-titre">
+            <span class="origine sunna">Sunna</span><span class="quand">Pour finir de t'apaiser</span>
+            <h3>Fais tes ablutions</h3>
+          </div>
+        </div>
+        <p class="exo-texte">Mouille-toi le visage, ou fais tes ablutions complètes. L'eau rafraîchit et aide à retrouver son calme.</p>
+        <div class="note-faible">
+          <strong>⚠ Hadith faible.</strong> Le hadith qui recommande les ablutions contre la colère est jugé faible par les spécialistes. Tu peux le faire comme un geste qui apaise, mais ce n'est pas une Sunna établie.
+        </div>
+        <div class="exo-bas">
+          <span class="exo-source">Abu Dawud 4784 <span class="mini-grade faible">Daʿīf</span></span>
+          <button class="fait" onclick="cocher(this)">C'est fait</button>
+        </div>
+      </div>
+
+      <div class="groupe"><span>Pour travailler sur toi</span><em>sur la durée</em></div>
+
+      <div class="exo psy" data-exo>
+        <div class="exo-haut">
+          <span class="exo-num">5</span>
+          <div class="exo-titre">
+            <span class="origine psy">Psychologie islamique</span><span class="quand">2 minutes, quand tu sens la tension</span>
+            <h3>Respire avec le dhikr</h3>
+          </div>
+        </div>
+        <div class="etapes">
+          <div class="etape"><span>Inspire<br><b>4 s</b></span></div>
+          <div class="etape-fleche">→</div>
+          <div class="etape"><span>Expire<br><b>6 s</b></span></div>
+          <div class="etape-fleche">↻</div>
+          <div class="etape"><span>10 fois</span></div>
+        </div>
+        <p class="exo-texte">À chaque expiration, dis intérieurement <span class="italique-or">« Astaghfirullāh »</span>. L'expiration longue calme le corps, et le dhikr ramène le cœur vers Allah.</p>
+        <button class="bouton-verre" style="margin-top:12px">▶ Lancer l'exercice guidé</button>
+        <div class="exo-bas">
+          <span class="exo-source">Respiration lente + dhikr <span class="mini-grade psy">Pratique</span></span>
+          <button class="fait" onclick="cocher(this)">C'est fait</button>
+        </div>
+      </div>
+
+      <div class="exo psy" data-exo>
+        <div class="exo-haut">
+          <span class="exo-num">6</span>
+          <div class="exo-titre">
+            <span class="origine psy">Psychologie islamique</span><span class="quand">Chaque soir, 5 minutes</span>
+            <h3>Le bilan du soir (muḥāsaba)</h3>
+          </div>
+        </div>
+        <p class="exo-texte">Avant de dormir, réponds à ces 3 questions :</p>
+        <ol class="questions">
+          <li>Qu'est-ce qui m'a mis en colère aujourd'hui ?</li>
+          <li>Comment j'ai réagi, et qu'est-ce que j'aurais pu faire à la place ?</li>
+          <li>Ai-je quelqu'un à qui demander pardon ?</li>
+        </ol>
+        <button class="bouton-verre" style="margin-top:12px">✎ Écrire dans mon carnet</button>
+        <div class="exo-bas">
+          <span class="exo-source">Inspiré d'Al-Ghazālī, Iḥyāʾ ʿulūm ad-dīn <span class="mini-grade psy">Tradition</span></span>
+          <button class="fait" onclick="cocher(this)">C'est fait</button>
+        </div>
+      </div>
+
+      <!-- DÉFI 7 JOURS -->
+      <div class="defi">
+        <div class="defi-haut">
+          <div>
+            <div class="surtitre">Défi 7 jours</div>
+            <h3>Une semaine sans éclater</h3>
+          </div>
+          <div class="defi-score"><span id="score">0</span>/7</div>
+        </div>
+        <p>Chaque soir, coche ta journée si tu as appliqué les gestes à chaque colère.</p>
+        <div class="jours" id="jours">
+          <button>L</button><button>M</button><button>M</button><button>J</button><button>V</button><button>S</button><button>D</button>
+        </div>
+        <button class="bouton-verre" style="margin-top:14px">🔔 Me le rappeler chaque soir</button>
+      </div>
+
+      <p class="avertissement"><em>Hidaya cite les textes, elle ne donne pas de fatwa.</em>Pour une situation personnelle, demande conseil à un imam ou à un savant.</p>
+    </div>
+  </section>
+
+  <!-- ÉCRAN 3 : SUJET SENSIBLE -->
+  <section class="ecran" id="sensible">
+    <div class="haut-res">
+      <button class="rond" onclick="aller('accueil')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 6l-6 6 6 6"/></svg></button>
+      <div class="question-posee" id="q-sensible">Puis-je divorcer si mon mari ne prie pas ?</div>
+    </div>
+    <div class="bloc-info">
+      <div class="grande-ico"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 21h18M5 21V11l7-6 7 6v10M10 21v-5a2 2 0 0 1 4 0v5"/><path d="M12 2v3"/></svg></div>
+      <div class="surtitre" style="margin-bottom:10px">Sujet sensible</div>
+      <h2>Cette question mérite<br><span class="italique-or">un vrai savant.</span></h2>
+      <p>Le divorce touche ta vie et celle de ta famille. La réponse dépend de ta situation précise, et Hidaya ne peut pas trancher à ta place.</p>
+      <button class="bouton-or"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.5"/></svg>Trouver une mosquée près de moi</button>
+      <button class="bouton-verre" onclick="aller('resultats')">Voir quand même les textes sur le mariage</button>
+    </div>
+    <p class="avertissement" style="margin-top:16px">Divorce, héritage, santé mentale : ces sujets sont toujours renvoyés vers un savant ou un professionnel.</p>
+  </section>
+
+  <!-- ÉCRAN 4 : RIEN TROUVÉ -->
+  <section class="ecran" id="vide">
+    <div class="haut-res">
+      <button class="rond" onclick="aller('accueil')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 6l-6 6 6 6"/></svg></button>
+      <div class="question-posee" id="q-vide"></div>
+    </div>
+    <div class="bloc-info">
+      <div class="grande-ico"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 5a2 2 0 0 1 2-2h5v17H6a2 2 0 0 0-2 2zM20 5a2 2 0 0 0-2-2h-5v17h5a2 2 0 0 1 2 2z"/></svg></div>
+      <h2>Aucun texte trouvé.<br><span class="italique-or">On préfère te le dire.</span></h2>
+      <p>Hidaya n'a pas trouvé de verset ni de hadith qui répond clairement à ta question. Elle n'invente jamais de réponse.</p>
+      <button class="bouton-or" onclick="aller('accueil')">Reformuler ma question</button>
+    </div>
+  </section>
+
+  <!-- ÉCRAN 5 : À PROPOS -->
+  <section class="ecran apropos" id="apropos">
+    <div class="surtitre" style="margin-top:14px">L'app</div>
+    <h2>Chaque réponse,<br><span class="italique-or">avec sa source.</span></h2>
+    <div class="point"><span class="num">1</span><p>Hidaya cherche uniquement dans le <strong>Coran</strong> et les grands recueils de <strong>hadiths</strong> : Bukhari, Muslim, Abu Dawud, Tirmidhi, Nasa'i, Ibn Majah.</p></div>
+    <div class="point"><span class="num">2</span><p>Chaque texte est affiché <strong>en arabe</strong>, avec sa traduction, sa référence exacte et son degré d'authenticité.</p></div>
+    <div class="point"><span class="num">3</span><p>Chaque réponse propose aussi des <strong>exercices pratiques</strong>, tirés de la Sunna ou de la psychologie islamique. L'origine de chaque exercice est toujours indiquée, et si un exercice repose sur un hadith faible, c'est écrit clairement.</p></div>
+    <div class="point"><span class="num">4</span><p>Le résumé « En bref » explique ce que disent les textes. <strong>Ce n'est pas une fatwa.</strong></p></div>
+    <div class="point"><span class="num">5</span><p>Si aucun texte ne répond, Hidaya le dit. <strong>Elle n'invente jamais.</strong></p></div>
+    <div class="pastilles"><span>Gratuit</span><span>Sans pub</span><span>Sources citées</span></div>
+  </section>
+
+  <nav class="nav">
+    <button class="actif" data-ecran="accueil" onclick="aller('accueil')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 11 12 4l9 7v9h-6v-6H9v6H3z"/></svg>Accueil</button>
+    <button data-ecran="themes" onclick="aller('accueil')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5a2 2 0 0 1 2-2h5v17H6a2 2 0 0 0-2 2zM20 5a2 2 0 0 0-2-2h-5v17h5a2 2 0 0 1 2 2z"/></svg>Thèmes</button>
+    <button data-ecran="favoris"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3h12v18l-6-4-6 4z"/></svg>Favoris</button>
+    <button data-ecran="historique"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg>Historique</button>
+    <button data-ecran="apropos" onclick="aller('apropos')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 3a9 9 0 1 0 6 15.5A7.5 7.5 0 1 1 15 3Z"/></svg>L'app</button>
+  </nav>
+</div>
+
+<script>
+  const SENSIBLES = ['divorc', 'héritage', 'heritage', 'suicid', 'dépression', 'depression', 'takfir', 'mécréant'];
+
+  function aller(id) {
+    document.querySelectorAll('.ecran').forEach(e => e.classList.toggle('actif', e.id === id));
+    document.querySelectorAll('.nav button').forEach(b => b.classList.toggle('actif', b.dataset.ecran === id));
+    document.getElementById(id).scrollTop = 0;
+  }
+
+  function poser(q) { document.getElementById('champ').value = q; chercher(); }
+
+  function chercher() {
+    const q = document.getElementById('champ').value.trim();
+    if (!q) return;
+    const bas = q.toLowerCase();
+    if (SENSIBLES.some(m => bas.includes(m))) {
+      document.getElementById('q-sensible').textContent = q;
+      return aller('sensible');
+    }
+    if (bas.includes('colère') || bas.includes('colere') || bas.includes('énerv')) {
+      aller('resultats');
+      const ch = document.getElementById('chargement'), c = document.getElementById('contenu-res');
+      ch.style.display = 'block'; c.style.display = 'none';
+      setTimeout(() => { ch.style.display = 'none'; c.style.display = 'block'; }, 1300);
+      return;
+    }
+    document.getElementById('q-vide').textContent = q;
+    aller('vide');
+  }
+
+
+  function cocher(btn) {
+    const exo = btn.closest('.exo');
+    exo.classList.toggle('fini');
+    btn.textContent = exo.classList.contains('fini') ? '✓ Fait' : "C'est fait";
+  }
+  document.querySelectorAll('#jours button').forEach(b => b.addEventListener('click', () => {
+    b.classList.toggle('ok');
+    document.getElementById('score').textContent = document.querySelectorAll('#jours button.ok').length;
+  }));
+
+  document.getElementById('champ').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); chercher(); }
+  });
+</script>
+</body>
+</html>
